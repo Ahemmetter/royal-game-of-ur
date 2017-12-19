@@ -5,7 +5,11 @@ Python implementation of the ancient boardgame "Royal Game of Ur" with TKinter
 
 The Royal Game of Ur is one of the oldest board games known to archaeology. Well-conserved remains of boards, along with a description of the game rules have been found in the 1920s in Mesopotamia. Its history can be traced back up to 5000 years ago, and has been played for a large amount of this time. Variations of this game have been known and played in other ancient civilizations, such as the Egyptians and Romans.
 
+![Original game board in the British Museum](https://raw.githubusercontent.com/ahemmetter/royal-game-of-ur/master/rgouoriginal.jpg)
+
 My personal interest in the game was sparked by a video of the curator of the British Museum, Irving Finkel, explaining the concepts and discovery of the game. Since the game has relatively simple rules and setup, I found it a fitting difficulty to try my hands on object-oriented programming and GUI implementation in Python.
+
+![Implementation in Tkinter and Python. Shown is an early game state](https://raw.githubusercontent.com/ahemmetter/royal-game-of-ur/master/rgouscrshot.png)
 
 ## Rules
 
@@ -13,7 +17,7 @@ The rules for the Royal Game of Ur are farily straight-forward. Variations exist
 
 The game board consists of 20 colored squares, arranged three horizontal rows. Each player initially has 7 stones in his color (black or white).
 
-![alt text](https://raw.githubusercontent.com/ahemmetter/royal-game-of-ur/master/rgouempty.png)
+![Starting board](https://raw.githubusercontent.com/ahemmetter/royal-game-of-ur/master/rgouempty.png)
 
 Players take turns throwing marked tetrahedrons (equivalent to throwing dice with changed probability distribution). The possible outcomes are 0, 1, 2, 3 or 4, where 2 is the most probable. Each player moves any stone the designated number of fields along a certain path with the goal of reaching the end and "freeing" the stone. The game ends when one player has managed to get all his 7 stones out of the game before the other player.
 

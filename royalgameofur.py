@@ -1,9 +1,13 @@
+# -*- coding: utf-8 -*-
+
 from Tkinter import *
 from random import randint
 import tkMessageBox
+import os
+import rgoudicts as rg
 
 # Parameters and Variables
-
+root = Tk()  # makes empty window
 size = 64                                   # size of one square in px
 squares = []                                # list that holds rectangles
 pad = 10                                    # padding around fishki (unused)
@@ -36,49 +40,103 @@ bpath = [-1, 9, 6, 3, 0, 1, 4, 7, 10, 12, 13, 15, 16, 19, 18, 17, 14, 99]
 wpath = [-1, 11, 8, 5, 2, 1, 4, 7, 10, 12, 13, 15, 14, 17, 18, 19, 16, 99]
 
 
+def restart_game():
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
+
+
 class Game:
 
     def __init__(self, root):
         self.root = root
+        self.lang = StringVar()
+        self.lang.set("en")
 
-        root.title("Royal Game of Ur")
+        def open_settings():
+            global lang
+            self.settings = Toplevel()
+            settings = self.settings
 
+            settings.deiconify()
+
+            def close_settings():
+                root.title(rg.rgou[self.lang.get()])
+                self.startbutton = Button(board, text=rg.roll[self.lang.get()], command=self.throw_dice, state="normal")
+                self.startbutton.place(x=336, y=80, height=32, width=96)
+
+                settings.withdraw()
+                root.wait_window(settings)
+
+            Radiobutton(settings, text="English", padx=20, variable=self.lang,
+                        value="en").grid(row=0, column=0, sticky=W)
+            Radiobutton(settings, text="Deutsch", padx=20, variable=self.lang,
+                        value="de").grid(row=1, column=0, sticky=W)
+            Radiobutton(settings, text="Русский", padx=20, variable=self.lang,
+                        value="ru").grid(row=2, column=0, sticky=W)
+            Radiobutton(settings, text="Français", padx=20, variable=self.lang,
+                        value="fr").grid(row=3, column=0, sticky=W)
+            Radiobutton(settings, text="Español", padx=20, variable=self.lang,
+                        value="es").grid(row=4, column=0, sticky=W)
+            Radiobutton(settings, text="Esperanto", padx=20, variable=self.lang,
+                        value="eo").grid(row=5, column=0, sticky=W)
+
+            self.okbutton = Button(settings, text="Ok", command=close_settings).grid(row=8, column=0)
+
+        def open_rules():
+            global lang
+            self.rules = Toplevel()
+            rules = self.rules
+            rules.deiconify()
+
+            Radiobutton(settings, text="English", padx=20, variable=self.lang,
+                        value="en").grid(row=0, column=0, sticky=W)
+            Radiobutton(settings, text="Deutsch", padx=20, variable=self.lang,
+                        value="de").grid(row=1, column=0, sticky=W)
+            Radiobutton(settings, text="Русский", padx=20, variable=self.lang,
+                        value="ru").grid(row=2, column=0, sticky=W)
+            Radiobutton(settings, text="Français", padx=20, variable=self.lang,
+                        value="fr").grid(row=3, column=0, sticky=W)
+            Radiobutton(settings, text="Español", padx=20, variable=self.lang,
+                        value="es").grid(row=4, column=0, sticky=W)
+            Radiobutton(settings, text="Esperanto", padx=20, variable=self.lang,
+                        value="eo").grid(row=5, column=0, sticky=W)
+
+            self.okbutton = Button(settings, text="Ok", command=close_settings).grid(row=8, column=0)
+
+        root.title(rg.rgou[self.lang.get()])
+        # root.iconbitmap("crown.icns")
         menu = Menu(root)
         root.config(menu=menu)
 
         self.message = StringVar()
         self.rolled = StringVar()
-        self.message.set("White begins")
+        self.skipper = StringVar()
+        self.message.set(rg.whitebegins[self.lang.get()])
         self.rolled.set("")
+        self.skipper.set("")
 
         status = Label(root, textvariable=self.message, bd=1, relief=SUNKEN, anchor=W)
         status.pack(side=BOTTOM, fill=X)
 
-        gamemenu = Menu(menu)
-        menu.add_cascade(label="Game", menu=gamemenu)
-        gamemenu.add_command(label="New Game")
-        gamemenu.add_separator()
-        gamemenu.add_command(label="Exit", command=root.quit)
-
-        preferences = Menu(menu)
-        menu.add_cascade(label="Preferences", menu=preferences)
-        preferences.add_command(label="Change language")
-        preferences.add_command(label="Change difficulty")
-        preferences.add_command(label="Change rule set")
-        preferences.add_command(label="Start as black")
-        preferences.add_separator()
-        preferences.add_command(label="Preferences")
-
-        aboutmenu = Menu(menu)
-        menu.add_cascade(label="About", menu=aboutmenu)
-        aboutmenu.add_command(label="Rules")
-        aboutmenu.add_command(label="About his game")
-
         self.draw_board()
         board.pack()
         self.create_fishki(bpos, wpos)
-        self.startbutton = Button(board, text="Roll!", command=self.throw_dice, state="normal")
+        self.startbutton = Button(board, text=rg.roll[self.lang.get()], command=self.throw_dice, state="normal")
         self.startbutton.place(x=336, y=80, height=32, width=96)
+
+        self.skipbutton = Button(board, text=rg.skip[self.lang.get()], command=self.change_turn, state="normal")
+        # self.skipbutton.place(x=336, y=80, height=32, width=96)
+        self.skipbutton.place_forget()
+
+        gamemenu = Menu(menu)
+        menu.add_cascade(label=rg.gamestr[self.lang.get()], menu=gamemenu)
+        gamemenu.add_command(label=rg.newgame[self.lang.get()], command=restart_game)
+        gamemenu.add_separator()
+        gamemenu.add_command(label=rg.preferences[self.lang.get()], command=open_settings)
+        gamemenu.add_command(label=rg.rules[self.lang.get()])
+        gamemenu.add_command(label=rg.aboutgame[self.lang.get()])
+        gamemenu.add_separator()
+        gamemenu.add_command(label=rg.exit[self.lang.get()], command=root.quit)
 
         self.rollednumber = Label(root, textvariable=self.rolled, font=("Courier", 40))
         self.rollednumber.place(x=336, y=212, height=32, width=96)
@@ -147,8 +205,11 @@ class Game:
         steps = randint(0, 1) + randint(0, 1) + randint(0, 1) + randint(0, 1)
         self.rolled.set(str(steps))
         if steps == 0:
+            print "0 gewürfelt"
+            # root.after(800, self.change_turn())
             self.change_turn()
-            self.throw_dice()
+            self.startbutton.config(state="active")
+            # self.throw_dice()
         else:
             self.startbutton.config(state="disabled")
             if whiteturn:
@@ -168,9 +229,9 @@ class Game:
                 stone = int(item[0])
                 self.show_moves(bpos, wpos, squares)
             else:
-                self.message.set("Out of bounds")
+                self.message.set(rg.outofbounds[self.lang.get()])
         else:
-            self.message.set("Not clickable")
+            self.message.set(rg.notclickable[self.lang.get()])
 
     def click(self):
         value = 0
@@ -194,11 +255,9 @@ class Game:
                         board.itemconfig(squares[black_goal], fill=lightbluec)
                         self.click()
             elif black_goal == 99:
-                board.itemconfig(bf[stone-21], fill=yellowc, outline=yellowc)
+                board.itemconfig(bf[stone - 21], fill=yellowc, outline=yellowc)
                 global bdone
                 bdone += 1
-                mes = "Black has already " + str(bdone) + " pieces home!"
-                self.message.set(mes)
                 board.coords(bf[stone - 21], bdone * 32 + 320, 16, bdone * 32 + fsize + 320, 16 + fsize)
                 bpos[stone - 21] = 99
                 self.redraw_board()
@@ -209,56 +268,75 @@ class Game:
                 # board.tag_unbind("clickable", "<ButtonPress-1>")
                 self.click()
                 return bpos, wpos
-            else:
-                print "not allowed (already occupied or wrong square)"
+            # else:
+                # print rg.notallowed[self.lang.get()]
 
         elif whiteturn and stone >= 28 and stone <= 34:     # white
             white_goal = wpath[wpath.index(wpos[stone - 28]) + steps]
-            if (white_goal != 99) and (white_goal not in wpos):
-                if (white_goal in bpos):
-                    if white_goal not in rosettes:
-                        board.itemconfig(squares[white_goal], fill=lightbluec)
-                        self.click()
-                else:
-                    if white_goal in rosettes:
-                        board.itemconfig(squares[white_goal], fill=lightredc)
-                        self.click()
-                    else:
-                        board.itemconfig(squares[white_goal], fill=lightbluec)
-                        self.click()
-            elif white_goal == 99:
-                board.itemconfig(wf[stone-28], fill=yellowc, outline=yellowc)
-                global wdone
-                wdone += 1
-                mes = "White has already " + str(wdone) + " pieces home!"
-                self.message.set(mes)
-                board.coords(wf[stone - 28], wdone * 32 + 320, 272, wdone * 32 + fsize + 320, 272 + fsize)
-                wpos[stone - 28] = 99
-                self.redraw_board()
-                self.startbutton.config(state="normal")
-                self.find_winner()
-                self.change_turn()
-                # board.tag_unbind("clickable", "<ButtonPress-1>")
-                self.ai3()
-                return bpos, wpos
-                # self.click()
-            else:
-                self.message.set("Not allowed")
 
+            skip = True
+            for i in range(28, 34):
+                if wpath[wpath.index(wpos[i - 28]) + steps] in wpos:
+                    if (wpath[wpath.index(wpos[i - 28]) + steps] in rosettes) and (wpath[wpath.index(wpos[i - 28]) + steps] in bpos):
+                        self.message.set(rg.skipmove[self.lang.get()])
+                        skip = True
+                    else:
+                        skip = False
+                        break
+                else:
+                    skip = False
+                    break
+
+            if skip == False:
+                if (white_goal != 99) and (white_goal not in wpos):
+                    if (white_goal in bpos):
+                        if white_goal not in rosettes:
+                            board.itemconfig(squares[white_goal], fill=lightbluec)
+                            self.click()
+                    else:
+                        if white_goal in rosettes:
+                            board.itemconfig(squares[white_goal], fill=lightredc)
+                            self.click()
+                        else:
+                            board.itemconfig(squares[white_goal], fill=lightbluec)
+                            self.click()
+                elif white_goal == 99:
+                    board.itemconfig(wf[stone - 28], fill=yellowc, outline=yellowc)
+                    global wdone
+                    wdone += 1
+                    board.coords(wf[stone - 28], wdone * 32 + 320, 272, wdone * 32 + fsize + 320, 272 + fsize)
+                    wpos[stone - 28] = 99
+                    self.redraw_board()
+                    self.startbutton.config(state="normal")
+                    self.find_winner()
+                    self.change_turn()
+                    # board.tag_unbind("clickable", "<ButtonPress-1>")
+                    self.ai3()
+                    return bpos, wpos
+                    # self.click()
+                else:
+                    self.message.set(rg.notallowed[self.lang.get()])
+            else:
+                print "Ok, now we need to skip the move"
+                self.startbutton.place_forget()
+                self.skipbutton.place(x=336, y=80, height=32, width=96)
 
     def move(self):
         x, y = self.find_position(clicked - 1)
         if stone >= 21 and stone <= 27:     # black
+            # print stone
             if bpath.index(bpos[stone - 21]) + steps <= 17:
                 black_goal = bpath[bpath.index(bpos[stone - 21]) + steps]
                 # if clicked square is target square and is not occupied by black fishka..
+                # print black_goal
                 if (clicked - 1 == black_goal) and (black_goal not in bpos):
                     # and if target square has white fishka..
                     if (black_goal in wpos):
                         # and is not a rosette..
                         if (black_goal not in rosettes):
                             # then move there, kick it
-                            board.coords(wf[wpos.index(black_goal)], wpos.index(black_goal) * 32 + 64, 272, wpos.index(black_goal) * 32 + fsize + 64, 272 + fsize)
+                            board.coords(wf[wpos.index(black_goal)], wpos.index(black_goal) * 32 + 64,
+                                         272, wpos.index(black_goal) * 32 + fsize + 64, 272 + fsize)
                             wpos[wpos.index(black_goal)] = -1
                             board.coords(bf[stone - 21], x, y, x + fsize, y + fsize)
                             bpos[stone - 21] = clicked - 1
@@ -297,9 +375,10 @@ class Game:
                             board.tag_unbind("clickable", "<ButtonPress-1>")
                             return bpos, wpos
                 else:
-                    self.message.set("You can't move there1")
+                    self.message.set(rg.youcant[self.lang.get()])
+                    # print whiteturn
             else:
-                self.message.set("Not allowed")
+                self.message.set(rg.notallowed[self.lang.get()])
                 self.change_turn()
 
         if stone >= 28 and stone <= 34:     # white
@@ -312,7 +391,8 @@ class Game:
                         # and is not a rosette..
                         if (white_goal not in rosettes):
                             # then move there, kick it
-                            board.coords(bf[bpos.index(white_goal)], bpos.index(white_goal) * 32 + 64, 16, bpos.index(white_goal) * 32 + fsize + 64, 16 + fsize)
+                            board.coords(bf[bpos.index(white_goal)], bpos.index(white_goal) * 32 +
+                                         64, 16, bpos.index(white_goal) * 32 + fsize + 64, 16 + fsize)
                             bpos[bpos.index(white_goal)] = -1
                             board.coords(wf[stone - 28], x, y, x + fsize, y + fsize)
                             wpos[stone - 28] = clicked - 1
@@ -351,28 +431,28 @@ class Game:
                             board.tag_unbind("clickable", "<ButtonPress-1>")
                             return bpos, wpos
                 else:
-                    self.message.set("You can't move there2")
+                    self.message.set(rg.youcant[self.lang.get()])
             else:
-                self.message.set("Not allowed")
+                self.message.set(rg.notallowed[self.lang.get()])
                 self.change_turn()
 
     def change_turn(self):
         global whiteturn
         if whiteturn:
             whiteturn = False
-            self.message.set("Black's turn")
+            self.message.set(rg.blacksturn[self.lang.get()])
             self.ai3()
         else:
             whiteturn = True
-            self.message.set("White's turn")
+            self.message.set(rg.whitesturn[self.lang.get()])
             self.startbutton.config(state="normal")
 
     def find_winner(self):
         if wdone == 7:
-            tkMessageBox.showinfo("We have a winner!", "White wins!")
+            tkMessageBox.showinfo(rg.wehaveawinner[self.lang.get()], rg.whitewins[self.lang.get()])
             root.quit()
         elif bdone == 7:
-            tkMessageBox.showinfo("We have a winner!", "Black wins!")
+            tkMessageBox.showinfo(rg.wehaveawinner[self.lang.get()], rg.blackwins[self.lang.get()])
             root.quit()
 
     def ai3(self):
@@ -434,10 +514,12 @@ class Game:
                     # self.move()
                     root.after(800, self.move)
                 else:
-                    self.message.set("Skip move")
+                    self.message.set(rg.skipmove[self.lang.get()])
                     self.change_turn()
 
-root = Tk()  # makes empty window
+
+# settings = Toplevel()
+
 
 board = Canvas(root, width=640, height=320)
 

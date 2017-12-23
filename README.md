@@ -13,7 +13,7 @@ My personal interest in the game was sparked by a video of the curator of the Br
 
 ## Rules
 
-The rules for the Royal Game of Ur are farily straight-forward. Variations exist, but in this program only one ruleset so far is implemented: the British Museum ruleset.
+The rules for the Royal Game of Ur are fairly straight-forward. Variations exist, but in this program only one ruleset so far is implemented: the British Museum ruleset.
 
 The game board consists of 20 colored squares, arranged three horizontal rows. Each player initially has 7 stones in his color (black or white).
 

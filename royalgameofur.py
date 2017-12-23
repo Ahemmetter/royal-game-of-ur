@@ -51,6 +51,7 @@ class Game:
         self.root = root
         self.lang = StringVar()
         self.lang.set("en")
+        self.rulesexp = StringVar()
 
         def open_settings():
             global lang
@@ -74,11 +75,11 @@ class Game:
             Radiobutton(settings, text="Русский", padx=20, variable=self.lang,
                         value="ru").grid(row=2, column=0, sticky=W)
             Radiobutton(settings, text="Français", padx=20, variable=self.lang,
-                        value="fr").grid(row=3, column=0, sticky=W)
+                        value="fr").grid(row=0, column=1, sticky=W)
             Radiobutton(settings, text="Español", padx=20, variable=self.lang,
-                        value="es").grid(row=4, column=0, sticky=W)
+                        value="es").grid(row=1, column=1, sticky=W)
             Radiobutton(settings, text="Esperanto", padx=20, variable=self.lang,
-                        value="eo").grid(row=5, column=0, sticky=W)
+                        value="eo").grid(row=2, column=1, sticky=W)
 
             self.okbutton = Button(settings, text="Ok", command=close_settings).grid(row=8, column=0)
 
@@ -88,20 +89,25 @@ class Game:
             rules = self.rules
             rules.deiconify()
 
-            Radiobutton(settings, text="English", padx=20, variable=self.lang,
-                        value="en").grid(row=0, column=0, sticky=W)
-            Radiobutton(settings, text="Deutsch", padx=20, variable=self.lang,
-                        value="de").grid(row=1, column=0, sticky=W)
-            Radiobutton(settings, text="Русский", padx=20, variable=self.lang,
-                        value="ru").grid(row=2, column=0, sticky=W)
-            Radiobutton(settings, text="Français", padx=20, variable=self.lang,
-                        value="fr").grid(row=3, column=0, sticky=W)
-            Radiobutton(settings, text="Español", padx=20, variable=self.lang,
-                        value="es").grid(row=4, column=0, sticky=W)
-            Radiobutton(settings, text="Esperanto", padx=20, variable=self.lang,
-                        value="eo").grid(row=5, column=0, sticky=W)
+            S = Scrollbar(rules)
+            S.grid(row=0, column=1)
 
-            self.okbutton = Button(settings, text="Ok", command=close_settings).grid(row=8, column=0)
+            ruletextdisplay = Text(rules, height=15, width=70, bd=0, padx=20, pady=20, wrap=WORD)
+            ruletextdisplay.insert(INSERT, rg.ruletext[self.lang.get()])
+            ruletextdisplay.grid(row=0, column=0)
+            S.config(command=ruletextdisplay.yview)
+            ruletextdisplay.config(yscrollcommand=S.set)
+            ruletextdisplay.config(state=DISABLED)
+
+            def close_rules():
+                root.title(rg.rgou[self.lang.get()])
+                self.startbutton = Button(board, text=rg.roll[self.lang.get()], command=self.throw_dice, state="normal")
+                self.startbutton.place(x=336, y=80, height=32, width=96)
+                rules.withdraw()
+                root.wait_window(rules)
+
+            self.closebutton = Button(rules, text="Ok", command=close_rules)
+            self.closebutton.grid(row=1, column=0)
 
         root.title(rg.rgou[self.lang.get()])
         # root.iconbitmap("crown.icns")
@@ -114,6 +120,9 @@ class Game:
         self.message.set(rg.whitebegins[self.lang.get()])
         self.rolled.set("")
         self.skipper.set("")
+
+        def gameinfo():
+            tkMessageBox.showinfo(rg.aboutgame[self.lang.get()], rg.info[self.lang.get()])
 
         status = Label(root, textvariable=self.message, bd=1, relief=SUNKEN, anchor=W)
         status.pack(side=BOTTOM, fill=X)
@@ -133,8 +142,8 @@ class Game:
         gamemenu.add_command(label=rg.newgame[self.lang.get()], command=restart_game)
         gamemenu.add_separator()
         gamemenu.add_command(label=rg.preferences[self.lang.get()], command=open_settings)
-        gamemenu.add_command(label=rg.rules[self.lang.get()])
-        gamemenu.add_command(label=rg.aboutgame[self.lang.get()])
+        gamemenu.add_command(label=rg.rules[self.lang.get()],  command=open_rules)
+        gamemenu.add_command(label=rg.aboutgame[self.lang.get()], command=gameinfo)
         gamemenu.add_separator()
         gamemenu.add_command(label=rg.exit[self.lang.get()], command=root.quit)
 

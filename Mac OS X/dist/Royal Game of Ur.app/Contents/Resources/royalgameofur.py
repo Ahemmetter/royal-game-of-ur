@@ -105,10 +105,13 @@ class Game:
 
             S = Scrollbar(rules)
             S.grid(row=0, column=1)
-
             ruletextdisplay = Text(rules, height=15, width=70, bd=0, padx=20, pady=20, wrap=WORD)
             ruletextdisplay.insert(INSERT, rg.ruletext[self.lang.get()])
             ruletextdisplay.grid(row=0, column=0)
+            img = PhotoImage(file = "rgouempty2.gif")
+            ruletextdisplay.image_create(INSERT, image = img, padx=20, pady=20)
+            photo = Label(rules, image=img)
+            photo.image = img
             S.config(command=ruletextdisplay.yview)
             ruletextdisplay.config(yscrollcommand=S.set)
             ruletextdisplay.config(state=DISABLED)
@@ -124,7 +127,6 @@ class Game:
             self.closebutton.grid(row=1, column=0)
 
         root.title(rg.rgou[self.lang.get()])
-        # root.iconbitmap("crown.icns")
         menu = Menu(root)
         root.config(menu=menu)
 

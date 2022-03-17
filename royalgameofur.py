@@ -5,6 +5,8 @@ from random import randint
 import tkMessageBox
 import os
 import rgoudicts as rg
+import arabic_reshaper
+from bidi.algorithm import get_display
 
 # Parameters and Variables
 root = Tk()  # makes empty window
@@ -94,6 +96,8 @@ class Game:
                         value="es").grid(row=1, column=1, sticky=W)
             Radiobutton(settings, text="Esperanto", padx=20, variable=self.lang,
                         value="eo").grid(row=2, column=1, sticky=W)
+            Radiobutton(settings, text="عربي", padx=20, variable=self.lang,
+                        value="ar").grid(row=2, column=1, sticky=W)
 
             self.okbutton = Button(settings, text="Ok", command=close_settings).grid(row=8, column=0)
 
@@ -230,7 +234,7 @@ class Game:
         steps = randint(0, 1) + randint(0, 1) + randint(0, 1) + randint(0, 1)
         self.rolled.set(str(steps))
         if steps == 0:
-            print "0 gewürfelt"
+            print ("0 gewürfelt")
             # root.after(800, self.change_turn())
             self.change_turn()
             self.startbutton.config(state="active")
@@ -342,7 +346,7 @@ class Game:
                 else:
                     self.message.set(rg.notallowed[self.lang.get()])
             else:
-                print "Ok, now we need to skip the move"
+                print ("Ok, now we need to skip the move")
                 self.startbutton.place_forget()
                 self.skipbutton.place(x=336, y=80, height=32, width=96)
 

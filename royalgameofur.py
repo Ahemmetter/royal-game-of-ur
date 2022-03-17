@@ -5,6 +5,8 @@ from random import randint
 import tkMessageBox
 import os
 import rgoudicts as rg
+import arabic_reshaper
+from bidi.algorithm import get_display
 
 # Parameters and Variables
 root = Tk()  # makes empty window

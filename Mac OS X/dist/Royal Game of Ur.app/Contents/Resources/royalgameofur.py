@@ -230,7 +230,7 @@ class Game:
         steps = randint(0, 1) + randint(0, 1) + randint(0, 1) + randint(0, 1)
         self.rolled.set(str(steps))
         if steps == 0:
-            print "0 gewürfelt"
+            print ("0 gewürfelt")
             # root.after(800, self.change_turn())
             self.change_turn()
             self.startbutton.config(state="active")
@@ -342,7 +342,7 @@ class Game:
                 else:
                     self.message.set(rg.notallowed[self.lang.get()])
             else:
-                print "Ok, now we need to skip the move"
+                print ("Ok, now we need to skip the move")
                 self.startbutton.place_forget()
                 self.skipbutton.place(x=336, y=80, height=32, width=96)
 

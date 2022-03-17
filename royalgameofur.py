@@ -94,6 +94,8 @@ class Game:
                         value="es").grid(row=1, column=1, sticky=W)
             Radiobutton(settings, text="Esperanto", padx=20, variable=self.lang,
                         value="eo").grid(row=2, column=1, sticky=W)
+            Radiobutton(settings, text="عربي", padx=20, variable=self.lang,
+                        value="ar").grid(row=2, column=1, sticky=W)
 
             self.okbutton = Button(settings, text="Ok", command=close_settings).grid(row=8, column=0)
 
